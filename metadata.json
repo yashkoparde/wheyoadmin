@@ -1,0 +1,8 @@
+{
+  "name": "Wheyo-Admin",
+  "description": "Brutalist, high-performance mission control for The Protein Kitchen. Features live order tracking, product CRM, and real-time performance analytics.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

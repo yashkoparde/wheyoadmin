@@ -1,0 +1,285 @@
+# WHEYO: VISUAL ARCHITECTURE & SCHEMATIC BLUEPRINTS
+
+> **Project:** WHEYO - Precision Fuel Ecosystem
+> **Document:** Structural Diagrams (Compact A4 Specifications)
+> **Systems:** Admin Mission Control & Client Tactical Interface
+> **Date:** May 17, 2026
+
+---
+
+## Technical Note on Visualization
+The following diagrams are strictly vertical (**Top-Down**) and optimized for **A4 Portrait** export. Labels are minimized to prevent horizontal overflow in PDF renders.
+
+---
+
+## 1. System Architecture
+**Focus:** Front-to-Back Connectivity.
+
+```mermaid
+graph TD
+    subgraph UI[Presentation]
+        C[Client App]
+        A[Admin Panel]
+    end
+
+    subgraph APP[Application]
+        Auth[JWT Auth]
+        State[React State]
+        Log[Nutri Logic]
+    end
+
+    subgraph DATA[Database]
+        DB[(Postgres)]
+        WS[WebSocket]
+    end
+
+    subgraph EXT[External]
+        WA[WhatsApp]
+        PDF[PDF Engine]
+    end
+
+    C --> Auth
+    A --> Auth
+    Auth --> State
+    State --> Log
+    Log --> DB
+    DB -.-> WS
+    WS -.-> A
+    C --> WA
+    A --> PDF
+
+    style A fill:#FF5C00,color:#fff
+    style C fill:#D4FF00,color:#000
+    style DB fill:#1e1e1e,stroke:#FF5C00,color:#fff
+```
+
+---
+
+## 2. Compact ERD
+**Focus:** Relational Schema.
+
+```mermaid
+erDiagram
+    USERS ||--o| PROFILES : "1:1"
+    USERS ||--o{ ORDERS : "1:N"
+    USERS ||--o{ LOGS : "1:N"
+    
+    PROFILES {
+        uuid id
+        string name
+        num goal
+    }
+
+    PRODUCTS {
+        uuid id
+        string name
+        num price
+        num protein
+    }
+
+    ORDERS {
+        bigint id
+        uuid user_id
+        string spot
+        jsonb data
+        num total
+    }
+
+    LOGS {
+        uuid id
+        date day
+        num protein
+    }
+```
+
+---
+
+## 3. Macro Data Flow (L0)
+**Focus:** Transactional Loop.
+
+```mermaid
+flowchart TD
+    U((Athlete)) --> UI[WHEYO UI]
+    UI --> RLS{Security}
+    RLS --> DB[(DB Hub)]
+    DB --> RT[Stream]
+    RT --> AD((Admin))
+    
+    UI --> PDF[Report]
+    UI --> WA[WhatsApp]
+
+    style RLS fill:#f00,color:#fff
+    style UI fill:#111,stroke:#D4FF00,color:#fff
+```
+
+---
+
+## 4. Auth & RLS Logic
+**Focus:** Permission Engine.
+
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant S as Supabase
+    participant D as Postgres
+
+    U->>S: Login
+    S-->>U: JWT
+    U->>D: SELECT Request
+    Note over D: RLS Check:<br/>uid == owner_id
+    alt Allowed
+        D-->>U: Data
+    else Denied
+        D-->>U: 403
+    end
+```
+
+---
+
+## 5. Admin Mission Workflow
+**Focus:** Backend Operations.
+
+```mermaid
+graph TD
+    Login([Login]) --> Dash{Dash}
+    Dash --> Feed[Order Feed]
+    Feed --> Prep[In Prep]
+    Prep --> Done[Complete]
+    Done --> Print[Daily PDF]
+    
+    Dash --> Inv[Products]
+    Dash --> Promo[Coupons]
+
+    style Login fill:#FF5C00,color:#fff
+```
+
+---
+
+## 6. Client Order Lifecycle
+**Focus:** State Transitions.
+
+```mermaid
+stateDiagram-v2
+    [*] --> ViewMenu
+    ViewMenu --> EditCart
+    EditCart --> Validated
+    Validated --> Serialized
+    Serialized --> Prepared
+    Prepared --> Synced
+    Synced --> [*]
+```
+
+---
+
+## 7. M.E.S.T Tech Stack
+**Focus:** Core Dependencies.
+
+```mermaid
+graph TD
+    Vite[Vite 6]
+    React[React 19]
+    TW[Tailwind 4]
+    Motion[Motion]
+    Supa[Supabase]
+    
+    Vite --> React
+    React --> TW
+    React --> Motion
+    React --> Supa
+    Supa --> DB[(DB)]
+
+    style Supa fill:#3ECF8E,color:#fff
+```
+
+---
+
+## 8. Gain Streak Logic
+**Focus:** Incremental Sync.
+
+```mermaid
+flowchart TD
+    Order[Order OK] --> Goal[Fetch Goal]
+    Goal --> Sum[Current + New]
+    Sum --> UI[Update Chart]
+    UI --> Confetti[Uplift UI]
+
+    style Confetti fill:#D4FF00,color:#000
+```
+
+---
+
+## 9. Roles Matrix
+**Focus:** Vertical Partition.
+
+```mermaid
+graph TD
+    subgraph Athletes
+        A_O[Personal Orders]
+        A_M[Personal Macros]
+    end
+    subgraph Managers
+        M_M[Menu Management]
+        M_O[Global Orders]
+        M_R[Revenue Logs]
+    end
+    style Athletes fill:#D4FF00,color:#000
+    style Managers fill:#FF5C00,color:#fff
+```
+
+---
+
+## 10. Warp-Speed Protocol
+**Focus:** Serialization Path.
+
+```mermaid
+graph TD
+    Cart[Cart JSON]
+    Encode[Base64/URL]
+    WA[WhatsApp Link]
+    
+    Cart --> Encode
+    Encode --> WA
+    WA --> Kitchen[Admin Hub]
+
+    style WA fill:#25D366,color:#fff
+```
+
+---
+
+## 11. Database Topology
+**Focus:** RLS Isolation.
+
+```mermaid
+graph TD
+    U1[User 101] --> Hub
+    U2[User 102] --> Hub
+    Hub[RLS Filter]
+    Hub --> Row1[Data 101]
+    Hub --> Row2[Data 102]
+
+    style Hub fill:#f00,color:#fff
+```
+
+---
+
+## 12. Scalability Map
+**Focus:** Infrastructure.
+
+```mermaid
+graph TD
+    LB[Load Balancer]
+    App[Vite Nodes]
+    Pool[PgBouncer]
+    DB[(Master DB)]
+    
+    LB --> App
+    App --> Pool
+    Pool --> DB
+
+    style DB fill:#FF5C00,color:#fff
+```
+
+---
+
+*Generated by WHEYO Technical Design System | A4 Compact Build | 2026*
+

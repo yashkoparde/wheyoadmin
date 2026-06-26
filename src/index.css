@@ -1,0 +1,53 @@
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-brand-neon: #D4FF00;
+  --color-brand-orange: #FF3E00;
+  --color-brand-dark: #050505;
+  --color-brand-gray: #141414;
+
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  --font-display: "Anton", sans-serif;
+}
+
+@layer base {
+  body {
+    @apply bg-brand-dark text-white font-sans antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display uppercase tracking-wider;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-brand-gray/50 border border-white/10 backdrop-blur-md;
+  }
+
+  .brutal-border {
+    @apply border-2 border-white;
+  }
+
+  .neon-glow {
+    @apply shadow-[0_0_15px_rgba(212,255,0,0.3)];
+  }
+
+  .orange-glow {
+    @apply shadow-[0_0_15px_rgba(255,62,0,0.3)];
+  }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    @apply bg-black/20;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-white/10 rounded-full hover:bg-white/20 transition-colors;
+  }
+}
